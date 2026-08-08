@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useLanguage, type LanguageCode } from '../../context/LanguageContext';
+import { PatientProfileModal } from '../patient/PatientProfileModal';
 import { 
   Activity, 
   Sun, 
@@ -8,7 +9,8 @@ import {
   Printer, 
   LogOut,
   HelpCircle,
-  Globe
+  Globe,
+  UserCheck
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -23,17 +25,40 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
     toggleTheme, 
     setIsPrintModalOpen,
     activeTab,
-    setActiveTab
+    setActiveTab,
+    currentPatient
   } = useApp();
 
   const { language, setLanguage, t } = useLanguage();
   const isDark = theme === 'dark';
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
 
   if (!currentUser) return null;
 
   return (
     <header className="sticky top-0 z-40 w-full font-sans transition-colors duration-300">
-      {/* Clean Main Header Bar */}
+      {/* Top Reference Telemetry Relay Bar matching Reference Screenshots 2 & 3 */}
+      <div className={`text-[11px] py-1 px-4 sm:px-8 font-mono flex items-center justify-between border-b ${
+        isDark 
+          ? 'bg-[#030712] border-cyan-900/40 text-cyan-400' 
+          : 'bg-slate-900 text-cyan-300 border-slate-800'
+      }`}>
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 font-bold">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Patient Telemetry Relay: Active
+          </span>
+          <span className="hidden md:inline text-slate-400">• Cardiology ICU • Ward 4 Bed 04</span>
+          <span className="hidden lg:inline text-slate-400">• 14 Patient Nodes Active</span>
+        </div>
+
+        <div className="flex items-center gap-4 font-bold">
+          <span className="text-amber-400">14 Alerts Monitored Today</span>
+          <span className="hidden sm:inline text-emerald-400">Vector Index: Active ✓</span>
+        </div>
+      </div>
+
+      {/* Main Header Bar */}
       <div className={`px-4 sm:px-8 py-3.5 border-b flex items-center justify-between backdrop-blur-2xl ${
         isDark 
           ? 'bg-[#060c18]/90 border-cyan-900/30 text-white shadow-lg shadow-cyan-950/20' 
@@ -61,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
           </div>
         </div>
 
-        {/* Center: Desktop Header Navigation Pills */}
+        {/* Center: Desktop Navigation Pills */}
         <div className="hidden lg:flex items-center gap-1 bg-slate-900/40 p-1.5 rounded-full border border-cyan-900/30">
           {[
             { id: 'dashboard', label: 'Overview' },
@@ -86,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
           ))}
         </div>
 
-        {/* Right: Language Dropdown, Tutorial, Theme Toggle & User Actions */}
+        {/* Right: Language Dropdown, Tutorial, Theme Toggle, Profile Update & User Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Multi-Language Dropdown */}
           <div className="flex items-center gap-1 border border-cyan-500/40 rounded-2xl px-2.5 py-1.5 bg-slate-900/60 text-xs text-cyan-300 font-bold backdrop-blur-md">
@@ -141,15 +166,29 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
             <span>Export EHR</span>
           </button>
 
-          {/* User Profile Badge */}
+          {/* User Profile Badge (Click to Edit Patient Profile) */}
           <div className="flex items-center gap-2 pl-2 border-l border-slate-700/40">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-400 to-teal-300 p-0.5 shadow-md">
-              <img
-                src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80"}
-                alt={currentUser.name}
-                className="w-full h-full rounded-full object-cover"
-              />
-            </div>
+            <button
+              onClick={() => setIsProfileModalOpen(true)}
+              className="flex items-center gap-2 cursor-pointer group"
+              title="Click to Edit Patient Details"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-400 to-teal-300 p-0.5 shadow-md group-hover:scale-105 transition-transform">
+                <img
+                  src={currentUser.avatarUrl || "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80"}
+                  alt={currentUser.name}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              </div>
+              <div className="hidden sm:block text-left">
+                <div className="text-xs font-black text-slate-200 group-hover:text-cyan-400 transition-colors">
+                  {currentPatient.name}
+                </div>
+                <div className="text-[9px] text-cyan-500 font-extrabold flex items-center gap-0.5">
+                  <UserCheck className="w-3 h-3" /> Edit Profile
+                </div>
+              </div>
+            </button>
 
             <button
               onClick={logout}
@@ -163,6 +202,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
           </div>
         </div>
       </div>
+
+      {/* Patient Details Profile Update Modal */}
+      <PatientProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
     </header>
   );
 };

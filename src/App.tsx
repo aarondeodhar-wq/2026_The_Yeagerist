@@ -12,6 +12,7 @@ import { VitalsLabTrends } from './components/trends/VitalsLabTrends';
 import { RiskAndDrugChecker } from './components/risk/RiskAndDrugChecker';
 import { RAGClinicalAssistant } from './components/rag/RAGClinicalAssistant';
 import { GuidedTutorialModal } from './components/common/GuidedTutorialModal';
+import { PDFExportModal } from './components/common/PDFExportModal';
 
 export const App: React.FC = () => {
   const { currentUser, activeTab, theme } = useApp();
@@ -28,11 +29,11 @@ export const App: React.FC = () => {
       {/* Header */}
       <Header onOpenTutorial={() => setIsTutorialOpen(true)} />
 
-      {/* Permanently Floating Right Navigation Sidebar for Desktop */}
+      {/* Collapsible Dot Pill Right Navigation Sidebar */}
       <FloatingRightSidebar />
 
-      {/* Main Content Area (BALANCED FULL WIDTH WITH lg:pr-64 TO FIT SIDEBAR PERFECTLY) */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24 lg:pb-16 lg:pr-64">
+      {/* Main Content Area (FULL WIDE SCREEN NO UNNECESSARY SIDE GAPS) */}
+      <main className="w-full px-4 sm:px-8 lg:pr-20 pt-6 pb-24 lg:pb-16">
         {activeTab === 'dashboard' && (
           currentUser.role === 'patient' ? <PatientPortal /> : <PatientDashboard />
         )}
@@ -44,11 +45,14 @@ export const App: React.FC = () => {
         {activeTab === 'analytics' && <ContactAndFaqPage />}
       </main>
 
-      {/* Native Bottom Mobile Nav Bar for Phones */}
+      {/* Native Bottom Mobile Navigation for Phones */}
       <BottomMobileNav />
 
-      {/* Optional Onboarding Tour Modal */}
+      {/* Onboarding Tour Modal */}
       <GuidedTutorialModal isOpen={isTutorialOpen} onClose={() => setIsTutorialOpen(false)} />
+
+      {/* Multi-Format EHR Export Modal */}
+      <PDFExportModal />
     </div>
   );
 };
