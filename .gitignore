@@ -1,0 +1,11 @@
+node_modules
+dist
+git_cli
+*.pyc
+__pycache__
+clean_push.py
+push_with_pat.py
+upload_via_api.py
+deploy_git*.py
+.env
+.vscode
