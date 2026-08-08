@@ -1,94 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from './context/AppContext';
+import { LoginPage } from './components/auth/LoginPage';
 import { Header } from './components/layout/Header';
-import { Sidebar } from './components/layout/Sidebar';
 import { FloatingRightSidebar } from './components/layout/FloatingRightSidebar';
-import { AlertDrawer } from './components/layout/AlertDrawer';
-import { LoadingScreen } from './components/common/LoadingScreen';
-import { PDFExportModal } from './components/common/PDFExportModal';
-
+import { BottomMobileNav } from './components/layout/BottomMobileNav';
 import { PatientDashboard } from './components/dashboard/PatientDashboard';
+import { PatientPortal } from './components/patient/PatientPortal';
+import { ContactAndFaqPage } from './components/patient/ContactAndFaqPage';
 import { LongitudinalTimeline } from './components/timeline/LongitudinalTimeline';
-import { OCRDocumentViewer } from './components/ocr/OCRDocumentViewer';
 import { VitalsLabTrends } from './components/trends/VitalsLabTrends';
 import { RiskAndDrugChecker } from './components/risk/RiskAndDrugChecker';
 import { RAGClinicalAssistant } from './components/rag/RAGClinicalAssistant';
-import { HospitalAnalytics } from './components/analytics/HospitalAnalytics';
+import { GuidedTutorialModal } from './components/common/GuidedTutorialModal';
 
-import { PatientPortal } from './components/patient/PatientPortal';
-import { LoginPage } from './components/auth/LoginPage';
+export const App: React.FC = () => {
+  const { currentUser, activeTab, theme } = useApp();
+  const [isTutorialOpen, setIsTutorialOpen] = useState<boolean>(false);
 
-const AppContent: React.FC = () => {
-  const { 
-    isAuthenticated, 
-    isLoading, 
-    activeTab, 
-    currentUser,
-    theme 
-  } = useApp();
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
-  if (!isAuthenticated) {
+  if (!currentUser) {
     return <LoginPage />;
   }
-
-  const isPatient = currentUser?.role === 'patient';
-
-  const renderTabContent = () => {
-    if (isPatient) {
-      return <PatientPortal />;
-    }
-
-    switch (activeTab) {
-      case 'dashboard':
-        return <PatientDashboard />;
-      case 'timeline':
-        return <LongitudinalTimeline />;
-      case 'ocr':
-        return <OCRDocumentViewer />;
-      case 'trends':
-        return <VitalsLabTrends />;
-      case 'risk':
-        return <RiskAndDrugChecker />;
-      case 'rag':
-        return <RAGClinicalAssistant />;
-      case 'analytics':
-        return <HospitalAnalytics />;
-      default:
-        return <PatientDashboard />;
-    }
-  };
 
   const isDark = theme === 'dark';
 
   return (
-    <div className={`min-h-screen ${isDark ? 'dark-gradient-bg text-slate-100' : 'light-gradient-bg text-slate-900'} transition-colors duration-500 flex flex-col font-sans relative`}>
-      <Header />
-      
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 md:py-8 relative">
-        <main className="w-full">
-          {renderTabContent()}
-        </main>
-      </div>
+    <div className={`min-h-screen ${isDark ? 'dark-gradient-bg text-slate-100' : 'light-gradient-bg text-slate-900'} transition-colors duration-300 font-sans`}>
+      {/* Header */}
+      <Header onOpenTutorial={() => setIsTutorialOpen(true)} />
 
-      {/* Floating Collapsible Right Navigation Bar matching Reference Screenshots 1, 2, 3 */}
+      {/* Permanently Floating Right Navigation Sidebar for Desktop */}
       <FloatingRightSidebar />
 
-      {/* Mobile Bottom Dock Sidebar */}
-      <Sidebar />
+      {/* Main Content Area (BALANCED FULL WIDTH WITH lg:pr-64 TO FIT SIDEBAR PERFECTLY) */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24 lg:pb-16 lg:pr-64">
+        {activeTab === 'dashboard' && (
+          currentUser.role === 'patient' ? <PatientPortal /> : <PatientDashboard />
+        )}
 
-      {/* Slide-over Alert Drawer */}
-      <AlertDrawer />
+        {activeTab === 'timeline' && <LongitudinalTimeline />}
+        {activeTab === 'trends' && <VitalsLabTrends />}
+        {activeTab === 'risk' && <RiskAndDrugChecker />}
+        {activeTab === 'rag' && <RAGClinicalAssistant />}
+        {activeTab === 'analytics' && <ContactAndFaqPage />}
+      </main>
 
-      {/* Printable EHR PDF Modal */}
-      <PDFExportModal />
+      {/* Native Bottom Mobile Nav Bar for Phones */}
+      <BottomMobileNav />
+
+      {/* Optional Onboarding Tour Modal */}
+      <GuidedTutorialModal isOpen={isTutorialOpen} onClose={() => setIsTutorialOpen(false)} />
     </div>
   );
 };
 
-export default function App() {
-  return <AppContent />;
-}
+export default App;
