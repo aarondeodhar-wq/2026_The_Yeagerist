@@ -43,7 +43,7 @@ export const FloatingRightSidebar: React.FC = () => {
     <aside
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`fixed right-6 top-28 z-40 transition-all duration-300 ease-out shadow-2xl cursor-pointer hidden lg:block ${
+      className={`fixed right-6 top-32 z-30 transition-all duration-300 ease-out shadow-2xl cursor-pointer hidden lg:block ${
         isHovered 
           ? 'w-60 rounded-3xl p-5' 
           : 'w-10 rounded-full py-5 px-1 flex flex-col items-center justify-center'
@@ -54,7 +54,7 @@ export const FloatingRightSidebar: React.FC = () => {
       }`}
     >
       {isHovered ? (
-        /* EXPANDED HOVER STATE WITH SIGN OUT OPTION */
+        /* EXPANDED HOVER STATE */
         <div className="space-y-4 w-full animate-fade-in">
           <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2.5">
             <span className="text-[11px] uppercase font-black tracking-wider text-cyan-400">NAVIGATION</span>

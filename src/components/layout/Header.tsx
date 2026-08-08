@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useLanguage, type LanguageCode } from '../../context/LanguageContext';
 import { PatientProfileModal } from '../patient/PatientProfileModal';
@@ -14,7 +14,8 @@ import {
   UserCheck,
   Stethoscope,
   User,
-  Shield
+  Shield,
+  ChevronDown
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -39,6 +40,19 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isPersonaMenuOpen, setIsPersonaMenuOpen] = useState<boolean>(false);
 
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close persona dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsPersonaMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   if (!currentUser) return null;
 
   const handleSwitchPersona = (role: UserRole) => {
@@ -47,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full font-sans transition-colors duration-300">
+    <header className="sticky top-0 z-50 w-full font-sans transition-colors duration-300">
       {/* Top Reference Telemetry Relay Bar */}
       <div className={`text-[11px] py-1 px-4 sm:px-8 font-mono flex items-center justify-between border-b ${
         isDark 
@@ -70,10 +84,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
       </div>
 
       {/* Main Header Bar */}
-      <div className={`px-4 sm:px-8 py-3.5 border-b flex items-center justify-between backdrop-blur-2xl ${
+      <div className={`px-4 sm:px-8 py-3 border-b flex items-center justify-between backdrop-blur-2xl ${
         isDark 
-          ? 'bg-[#060c18]/90 border-cyan-900/30 text-white shadow-lg shadow-cyan-950/20' 
-          : 'bg-white/90 border-slate-200 text-slate-900 shadow-sm'
+          ? 'bg-[#060c18]/95 border-cyan-900/30 text-white shadow-lg shadow-cyan-950/20' 
+          : 'bg-white/95 border-slate-200 text-slate-900 shadow-sm'
       }`}>
         {/* Left: Branding */}
         <div className="flex items-center gap-3">
@@ -122,7 +136,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
           ))}
         </div>
 
-        {/* Right: Language, Guide, Theme, Switch Persona & Sign Out */}
+        {/* Right: Language Dropdown, Tutorial, Theme Toggle, Switch Persona & Sign Out */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Multi-Language Dropdown */}
           <div className="flex items-center gap-1 border border-cyan-500/40 rounded-2xl px-2.5 py-1.5 bg-slate-900/60 text-xs text-cyan-300 font-bold backdrop-blur-md">
@@ -177,8 +191,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
             <span>Export EHR</span>
           </button>
 
-          {/* User Profile & Persona Switcher */}
-          <div className="relative flex items-center gap-2 pl-2 border-l border-slate-700/40">
+          {/* User Profile & Persona Switcher (REF-BASED Z-60 POPUP OVERLAY FIX) */}
+          <div className="relative flex items-center gap-2 pl-2 border-l border-slate-700/40" ref={menuRef}>
             <button
               onClick={() => setIsPersonaMenuOpen(!isPersonaMenuOpen)}
               className="flex items-center gap-2 cursor-pointer group"
@@ -192,8 +206,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
                 />
               </div>
               <div className="hidden sm:block text-left">
-                <div className="text-xs font-black text-slate-200 group-hover:text-cyan-400 transition-colors">
-                  {currentPatient.name}
+                <div className="text-xs font-black text-slate-200 group-hover:text-cyan-400 transition-colors flex items-center gap-1">
+                  <span>{currentPatient.name}</span>
+                  <ChevronDown className="w-3 h-3 text-cyan-400" />
                 </div>
                 <div className="text-[9px] text-cyan-500 font-extrabold flex items-center gap-0.5 capitalize">
                   <UserCheck className="w-3 h-3" /> {currentUser.role} Role
@@ -201,35 +216,44 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
               </div>
             </button>
 
-            {/* Persona Dropdown Menu */}
+            {/* Persona Dropdown Menu (Z-60 SO IT RENDERS OVER ALL SIDEBARS) */}
             {isPersonaMenuOpen && (
-              <div className={`absolute right-12 top-12 w-48 rounded-2xl border shadow-2xl p-2 z-50 animate-fade-in ${
-                isDark ? 'bg-[#0c182c] border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900'
+              <div className={`absolute right-0 top-12 w-52 rounded-2xl border shadow-2xl p-2 z-[60] animate-fade-in ${
+                isDark ? 'bg-[#0c182c] border-slate-700 text-white shadow-black/80' : 'bg-white border-slate-300 text-slate-900 shadow-xl'
               }`}>
                 <div className="text-[10px] font-black uppercase text-slate-400 px-3 py-1 border-b border-slate-700/40 mb-1">
-                  Switch Persona
+                  SWITCH USER PERSONA
                 </div>
                 <button
                   onClick={() => handleSwitchPersona('doctor')}
-                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors cursor-pointer"
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer ${
+                    currentUser.role === 'doctor' ? 'bg-cyan-500/20 text-cyan-300' : 'hover:bg-slate-800'
+                  }`}
                 >
                   <Stethoscope className="w-4 h-4 text-cyan-400" /> Dr. Sharma (Doctor)
                 </button>
                 <button
                   onClick={() => handleSwitchPersona('patient')}
-                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors cursor-pointer"
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer ${
+                    currentUser.role === 'patient' ? 'bg-cyan-500/20 text-cyan-300' : 'hover:bg-slate-800'
+                  }`}
                 >
                   <User className="w-4 h-4 text-purple-400" /> Eleanor Vance (Patient)
                 </button>
                 <button
                   onClick={() => handleSwitchPersona('admin')}
-                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors cursor-pointer"
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer ${
+                    currentUser.role === 'admin' ? 'bg-cyan-500/20 text-cyan-300' : 'hover:bg-slate-800'
+                  }`}
                 >
                   <Shield className="w-4 h-4 text-emerald-400" /> Operations (Admin)
                 </button>
                 <div className="border-t border-slate-700/40 my-1"></div>
                 <button
-                  onClick={() => setIsProfileModalOpen(true)}
+                  onClick={() => {
+                    setIsProfileModalOpen(true);
+                    setIsPersonaMenuOpen(false);
+                  }}
                   className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 text-cyan-400 hover:bg-cyan-500/20 transition-colors cursor-pointer"
                 >
                   <UserCheck className="w-4 h-4" /> Edit Patient EHR Details
