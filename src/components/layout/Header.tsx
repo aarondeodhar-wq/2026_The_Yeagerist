@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useLanguage, type LanguageCode } from '../../context/LanguageContext';
 import { PatientProfileModal } from '../patient/PatientProfileModal';
+import type { UserRole } from '../../types/clinical';
 import { 
   Activity, 
   Sun, 
@@ -10,7 +11,10 @@ import {
   LogOut,
   HelpCircle,
   Globe,
-  UserCheck
+  UserCheck,
+  Stethoscope,
+  User,
+  Shield
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -20,6 +24,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
   const { 
     currentUser, 
+    login,
     logout, 
     theme, 
     toggleTheme, 
@@ -32,12 +37,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
   const { language, setLanguage, t } = useLanguage();
   const isDark = theme === 'dark';
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+  const [isPersonaMenuOpen, setIsPersonaMenuOpen] = useState<boolean>(false);
 
   if (!currentUser) return null;
 
+  const handleSwitchPersona = (role: UserRole) => {
+    login(role);
+    setIsPersonaMenuOpen(false);
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full font-sans transition-colors duration-300">
-      {/* Top Reference Telemetry Relay Bar matching Reference Screenshots 2 & 3 */}
+      {/* Top Reference Telemetry Relay Bar */}
       <div className={`text-[11px] py-1 px-4 sm:px-8 font-mono flex items-center justify-between border-b ${
         isDark 
           ? 'bg-[#030712] border-cyan-900/40 text-cyan-400' 
@@ -111,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
           ))}
         </div>
 
-        {/* Right: Language Dropdown, Tutorial, Theme Toggle, Profile Update & User Actions */}
+        {/* Right: Language, Guide, Theme, Switch Persona & Sign Out */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Multi-Language Dropdown */}
           <div className="flex items-center gap-1 border border-cyan-500/40 rounded-2xl px-2.5 py-1.5 bg-slate-900/60 text-xs text-cyan-300 font-bold backdrop-blur-md">
@@ -166,12 +177,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
             <span>Export EHR</span>
           </button>
 
-          {/* User Profile Badge (Click to Edit Patient Profile) */}
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-700/40">
+          {/* User Profile & Persona Switcher */}
+          <div className="relative flex items-center gap-2 pl-2 border-l border-slate-700/40">
             <button
-              onClick={() => setIsProfileModalOpen(true)}
+              onClick={() => setIsPersonaMenuOpen(!isPersonaMenuOpen)}
               className="flex items-center gap-2 cursor-pointer group"
-              title="Click to Edit Patient Details"
+              title="Switch Persona / Edit Details"
             >
               <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-400 to-teal-300 p-0.5 shadow-md group-hover:scale-105 transition-transform">
                 <img
@@ -184,20 +195,60 @@ export const Header: React.FC<HeaderProps> = ({ onOpenTutorial }) => {
                 <div className="text-xs font-black text-slate-200 group-hover:text-cyan-400 transition-colors">
                   {currentPatient.name}
                 </div>
-                <div className="text-[9px] text-cyan-500 font-extrabold flex items-center gap-0.5">
-                  <UserCheck className="w-3 h-3" /> Edit Profile
+                <div className="text-[9px] text-cyan-500 font-extrabold flex items-center gap-0.5 capitalize">
+                  <UserCheck className="w-3 h-3" /> {currentUser.role} Role
                 </div>
               </div>
             </button>
 
+            {/* Persona Dropdown Menu */}
+            {isPersonaMenuOpen && (
+              <div className={`absolute right-12 top-12 w-48 rounded-2xl border shadow-2xl p-2 z-50 animate-fade-in ${
+                isDark ? 'bg-[#0c182c] border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900'
+              }`}>
+                <div className="text-[10px] font-black uppercase text-slate-400 px-3 py-1 border-b border-slate-700/40 mb-1">
+                  Switch Persona
+                </div>
+                <button
+                  onClick={() => handleSwitchPersona('doctor')}
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors cursor-pointer"
+                >
+                  <Stethoscope className="w-4 h-4 text-cyan-400" /> Dr. Sharma (Doctor)
+                </button>
+                <button
+                  onClick={() => handleSwitchPersona('patient')}
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors cursor-pointer"
+                >
+                  <User className="w-4 h-4 text-purple-400" /> Eleanor Vance (Patient)
+                </button>
+                <button
+                  onClick={() => handleSwitchPersona('admin')}
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-cyan-500/20 hover:text-cyan-300 transition-colors cursor-pointer"
+                >
+                  <Shield className="w-4 h-4 text-emerald-400" /> Operations (Admin)
+                </button>
+                <div className="border-t border-slate-700/40 my-1"></div>
+                <button
+                  onClick={() => setIsProfileModalOpen(true)}
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 text-cyan-400 hover:bg-cyan-500/20 transition-colors cursor-pointer"
+                >
+                  <UserCheck className="w-4 h-4" /> Edit Patient EHR Details
+                </button>
+              </div>
+            )}
+
+            {/* Direct Sign Out Button */}
             <button
               onClick={logout}
-              className={`p-2 rounded-2xl border transition-all cursor-pointer ${
-                isDark ? 'bg-slate-900 text-rose-400 border-slate-800 hover:bg-rose-950/40' : 'bg-slate-100 text-rose-600 border-slate-200 hover:bg-rose-50'
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-2xl border text-xs font-black transition-all cursor-pointer ${
+                isDark 
+                  ? 'bg-rose-950/40 text-rose-300 border-rose-800/60 hover:bg-rose-900/60' 
+                  : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
               }`}
-              title="Sign Out"
+              title="Sign Out of Session"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign Out</span>
             </button>
           </div>
         </div>

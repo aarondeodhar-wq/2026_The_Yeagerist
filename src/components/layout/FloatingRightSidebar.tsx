@@ -8,11 +8,12 @@ import {
   TrendingUp, 
   ShieldAlert, 
   Bot, 
-  Database
+  Database,
+  LogOut
 } from 'lucide-react';
 
 export const FloatingRightSidebar: React.FC = () => {
-  const { activeTab, setActiveTab, theme, currentUser } = useApp();
+  const { activeTab, setActiveTab, theme, currentUser, logout } = useApp();
   const { t } = useLanguage();
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
@@ -53,7 +54,7 @@ export const FloatingRightSidebar: React.FC = () => {
       }`}
     >
       {isHovered ? (
-        /* EXPANDED HOVER STATE */
+        /* EXPANDED HOVER STATE WITH SIGN OUT OPTION */
         <div className="space-y-4 w-full animate-fade-in">
           <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2.5">
             <span className="text-[11px] uppercase font-black tracking-wider text-cyan-400">NAVIGATION</span>
@@ -80,10 +81,20 @@ export const FloatingRightSidebar: React.FC = () => {
                 </button>
               );
             })}
+
+            <div className="border-t border-slate-700/40 my-2"></div>
+
+            <button
+              onClick={logout}
+              className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2.5 text-rose-400 hover:bg-rose-950/40 transition-all cursor-pointer"
+            >
+              <LogOut className="w-4 h-4 text-rose-500" />
+              <span>Sign Out Session</span>
+            </button>
           </div>
         </div>
       ) : (
-        /* COLLAPSED NARROW PILL WITH SMALL DOTS matching Reference Screenshots 2 & 3 */
+        /* COLLAPSED NARROW PILL WITH SMALL DOTS */
         <div className="flex flex-col items-center gap-3.5 w-full py-1">
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping mb-1"></span>
           {NAV_LINKS.map(link => {
