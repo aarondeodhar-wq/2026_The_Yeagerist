@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useApp, type NavigationTab } from '../../context/AppContext';
+import { useApp } from '../../context/AppContext';
 import { OCRUploadModal } from '../ocr/OCRUploadModal';
 import { 
   Users, 
@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 export const PatientDashboard: React.FC = () => {
-  const { patients, setCurrentPatientId, activeTab, setActiveTab, theme } = useApp();
+  const { patients, setCurrentPatientId, setActiveTab, theme } = useApp();
   const [selectedRiskFilter, setSelectedRiskFilter] = useState<string>('all');
   const [searchFilter, setSearchFilter] = useState<string>('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState<boolean>(false);
@@ -37,144 +37,100 @@ export const PatientDashboard: React.FC = () => {
 
   const isDark = theme === 'dark';
 
-  const RIGHT_NAV_LINKS: { id: NavigationTab; label: string }[] = [
-    { id: 'dashboard', label: 'Overview' },
-    { id: 'timeline', label: 'EHR Timeline' },
-    { id: 'ocr', label: 'OCR Vision' },
-    { id: 'trends', label: 'Vitals & Lab Trends' },
-    { id: 'risk', label: 'Organ Risk Matrix' },
-    { id: 'rag', label: 'Ask Clinical AI' },
-    { id: 'analytics', label: 'Hospital Analytics' },
-  ];
-
   return (
     <div className="space-y-8 font-sans pb-12">
-      <div className="relative flex flex-col lg:flex-row items-start gap-6">
-        {/* MASSIVE HERO CONTAINER (Grounded - NO outer box hover animation) */}
-        <div className={`flex-1 rounded-[36px] p-6 sm:p-10 md:p-12 border relative overflow-hidden transition-all shadow-2xl ${
-          isDark 
-            ? 'bg-gradient-to-b from-[#0c182c]/85 to-[#070e1c]/90 border-cyan-500/20 shadow-cyan-950/40 text-slate-100' 
-            : 'bg-white/85 border-white/60 shadow-sky-100 text-slate-900 backdrop-blur-xl'
-        }`}>
-          {/* Ambient Glowing Orbs */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-gradient-to-r from-cyan-500/15 via-teal-500/15 to-indigo-500/15 rounded-full blur-[100px] pointer-events-none"></div>
+      {/* MASSIVE HERO CONTAINER matching Reference Screenshots 1 & 2 */}
+      <div className={`rounded-[36px] p-6 sm:p-10 md:p-12 border relative overflow-hidden transition-all shadow-2xl ${
+        isDark 
+          ? 'bg-gradient-to-b from-[#0c182c]/85 to-[#070e1c]/90 border-cyan-500/20 shadow-cyan-950/40 text-slate-100' 
+          : 'bg-white/85 border-white/60 shadow-sky-100 text-slate-900 backdrop-blur-xl'
+      }`}>
+        {/* Ambient Glowing Orbs */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-gradient-to-r from-cyan-500/15 via-teal-500/15 to-indigo-500/15 rounded-full blur-[100px] pointer-events-none"></div>
 
-          {/* Top Real-Time System Pill */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-400/30 px-4 py-1.5 rounded-full text-cyan-400 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-              <span>Real-Time Clinical Telemetry & Risk Prediction Engine</span>
-            </div>
-          </div>
-
-          {/* Massive Hero Title */}
-          <div className="text-center max-w-3xl mx-auto space-y-4 mb-8">
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-300 bg-clip-text text-transparent">
-              Patient Record Analysis & Clinical Monitoring Platform
-            </h1>
-            <p className={`text-xs md:text-sm leading-relaxed max-w-xl mx-auto font-medium ${
-              isDark ? 'text-slate-300' : 'text-slate-600'
-            }`}>
-              Integrating OCR document vision, LLM neural extraction, real-time lab deltas, and RAG vector store memory into an executive clinical decision support system.
-            </p>
-
-            {/* Action Hero Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-4">
-              <button
-                onClick={() => setIsUploadModalOpen(true)}
-                className="flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs px-6 py-3.5 rounded-full shadow-lg shadow-cyan-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-              >
-                <Globe className="w-4 h-4" />
-                <span>Ingest Patient Record</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab('rag')}
-                className={`flex items-center gap-2 text-xs font-bold px-6 py-3.5 rounded-full border transition-all cursor-pointer ${
-                  isDark ? 'bg-slate-900/80 text-slate-200 border-cyan-900/50 hover:border-cyan-400' : 'bg-slate-100 text-slate-800 border-slate-300 hover:border-cyan-400'
-                }`}
-              >
-                <Play className="w-3.5 h-3.5 fill-current text-cyan-400" />
-                <span>Launch Clinical AI Assistant</span>
-              </button>
-            </div>
-          </div>
-
-          {/* 4 Bottom Telemetry Metric Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4">
-            <div className={`p-4 rounded-2xl border transition-all ${
-              isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
-            }`}>
-              <div className="text-cyan-400 mb-2">
-                <Users className="w-5 h-5" />
-              </div>
-              <div className="text-xl sm:text-2xl font-black">{totalCount}</div>
-              <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Monitored Patients</div>
-            </div>
-
-            <div className={`p-4 rounded-2xl border transition-all ${
-              isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
-            }`}>
-              <div className="text-teal-400 mb-2">
-                <FileCheck2 className="w-5 h-5" />
-              </div>
-              <div className="text-xl sm:text-2xl font-black">1,420</div>
-              <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Extracted Biomarkers</div>
-            </div>
-
-            <div className={`p-4 rounded-2xl border transition-all ${
-              isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
-            }`}>
-              <div className="text-rose-500 mb-2">
-                <ShieldAlert className="w-5 h-5" />
-              </div>
-              <div className="text-xl sm:text-2xl font-black">{criticalCount}</div>
-              <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Threat Interceptions</div>
-            </div>
-
-            <div className={`p-4 rounded-2xl border transition-all ${
-              isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
-            }`}>
-              <div className="text-purple-400 mb-2">
-                <Activity className="w-5 h-5" />
-              </div>
-              <div className="text-xl sm:text-2xl font-black">14</div>
-              <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Indexed RAG Vector Docs</div>
-            </div>
+        {/* Top Real-Time System Pill */}
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-400/30 px-4 py-1.5 rounded-full text-cyan-400 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            <span>Real-Time Clinical Telemetry & Risk Prediction Engine</span>
           </div>
         </div>
 
-        {/* FLOATING RIGHT NAVIGATION CARD */}
-        <aside className={`w-full lg:w-56 rounded-[28px] p-5 border shrink-0 transition-all shadow-xl space-y-4 ${
-          isDark 
-            ? 'bg-[#0c182c]/85 border-cyan-500/30 text-slate-100' 
-            : 'bg-white/90 border-slate-200 text-slate-900 backdrop-blur-xl'
-        }`}>
-          <div className="flex items-center justify-between border-b border-slate-700/30 pb-2.5">
-            <span className="text-[11px] uppercase font-black tracking-wider text-slate-400">NAVIGATION</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        {/* Massive Hero Title matching Reference Screenshots 1 & 2 */}
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight bg-gradient-to-r from-cyan-300 via-teal-200 to-indigo-300 bg-clip-text text-transparent">
+            Patient Record Analysis & Clinical Monitoring Platform
+          </h1>
+          <p className={`text-xs md:text-sm leading-relaxed max-w-xl mx-auto font-medium ${
+            isDark ? 'text-slate-300' : 'text-slate-600'
+          }`}>
+            Integrating OCR document vision, LLM neural extraction, real-time lab deltas, and RAG vector store memory into an executive clinical decision support platform.
+          </p>
+
+          {/* Action Hero Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-4">
+            <button
+              onClick={() => setIsUploadModalOpen(true)}
+              className="flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs px-6 py-3.5 rounded-full shadow-lg shadow-cyan-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            >
+              <Globe className="w-4 h-4" />
+              <span>Ingest Patient Record</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('rag')}
+              className={`flex items-center gap-2 text-xs font-bold px-6 py-3.5 rounded-full border transition-all cursor-pointer ${
+                isDark ? 'bg-slate-900/80 text-slate-200 border-cyan-900/50 hover:border-cyan-400' : 'bg-slate-100 text-slate-800 border-slate-300 hover:border-cyan-400'
+              }`}
+            >
+              <Play className="w-3.5 h-3.5 fill-current text-cyan-400" />
+              <span>Launch Clinical AI Assistant</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4 Bottom Telemetry Metric Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4">
+          <div className={`p-4 rounded-2xl border transition-all ${
+            isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
+          }`}>
+            <div className="text-cyan-400 mb-2">
+              <Users className="w-5 h-5" />
+            </div>
+            <div className="text-xl sm:text-2xl font-black">{totalCount}</div>
+            <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Monitored Patients</div>
           </div>
 
-          <div className="space-y-1.5">
-            {RIGHT_NAV_LINKS.map(link => {
-              const isActive = activeTab === link.id;
-              return (
-                <button
-                  key={link.id}
-                  onClick={() => setActiveTab(link.id)}
-                  className={`w-full text-left px-3.5 py-2 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black shadow-md'
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
-                  }`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-slate-950' : 'bg-slate-500'}`}></span>
-                  <span>{link.label}</span>
-                </button>
-              );
-            })}
+          <div className={`p-4 rounded-2xl border transition-all ${
+            isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
+          }`}>
+            <div className="text-teal-400 mb-2">
+              <FileCheck2 className="w-5 h-5" />
+            </div>
+            <div className="text-xl sm:text-2xl font-black">1,420</div>
+            <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Extracted Biomarkers</div>
           </div>
-        </aside>
+
+          <div className={`p-4 rounded-2xl border transition-all ${
+            isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
+          }`}>
+            <div className="text-rose-500 mb-2">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <div className="text-xl sm:text-2xl font-black">{criticalCount}</div>
+            <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Threat Interceptions</div>
+          </div>
+
+          <div className={`p-4 rounded-2xl border transition-all ${
+            isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
+          }`}>
+            <div className="text-purple-400 mb-2">
+              <Activity className="w-5 h-5" />
+            </div>
+            <div className="text-xl sm:text-2xl font-black">14</div>
+            <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Active Vector Index</div>
+          </div>
+        </div>
       </div>
 
       {/* PATIENTS LIST & FILTER SECTION */}
@@ -260,7 +216,7 @@ export const PatientDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Floating Bottom Right AI Chat Assistant Button */}
+      {/* Floating Bottom Right AI Chat Assistant Button matching reference screenshot */}
       <button
         onClick={() => setActiveTab('rag')}
         className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer border border-cyan-300 hover:scale-105 transition-transform"
@@ -269,7 +225,7 @@ export const PatientDashboard: React.FC = () => {
         <span>Clinical AI Copilot</span>
       </button>
 
-      {/* Ingestion Modal (Popup inside app context) */}
+      {/* Ingestion Modal */}
       <OCRUploadModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} />
     </div>
   );
