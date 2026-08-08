@@ -50,8 +50,8 @@ export const PatientDashboard: React.FC = () => {
   return (
     <div className="space-y-8 font-sans pb-12">
       <div className="relative flex flex-col lg:flex-row items-start gap-6">
-        {/* MASSIVE HERO CONTAINER matching Image 2 */}
-        <div className={`flex-1 rounded-[36px] p-8 md:p-12 border relative overflow-hidden transition-all shadow-2xl ${
+        {/* MASSIVE HERO CONTAINER (Grounded - NO outer box hover animation) */}
+        <div className={`flex-1 rounded-[36px] p-6 sm:p-10 md:p-12 border relative overflow-hidden transition-all shadow-2xl ${
           isDark 
             ? 'bg-gradient-to-b from-[#0c182c]/85 to-[#070e1c]/90 border-cyan-500/20 shadow-cyan-950/40 text-slate-100' 
             : 'bg-white/85 border-white/60 shadow-sky-100 text-slate-900 backdrop-blur-xl'
@@ -69,7 +69,7 @@ export const PatientDashboard: React.FC = () => {
 
           {/* Massive Hero Title */}
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-8">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-300 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-300 bg-clip-text text-transparent">
               Patient Record Analysis & Clinical Monitoring Platform
             </h1>
             <p className={`text-xs md:text-sm leading-relaxed max-w-xl mx-auto font-medium ${
@@ -79,10 +79,10 @@ export const PatientDashboard: React.FC = () => {
             </p>
 
             {/* Action Hero Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-4">
               <button
                 onClick={() => setIsUploadModalOpen(true)}
-                className="flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs px-6 py-3.5 rounded-full shadow-lg shadow-cyan-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer jiggle-hover"
+                className="flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs px-6 py-3.5 rounded-full shadow-lg shadow-cyan-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
               >
                 <Globe className="w-4 h-4" />
                 <span>Ingest Patient Record</span>
@@ -90,7 +90,7 @@ export const PatientDashboard: React.FC = () => {
 
               <button
                 onClick={() => setActiveTab('rag')}
-                className={`flex items-center gap-2 text-xs font-bold px-6 py-3.5 rounded-full border transition-all cursor-pointer jiggle-hover ${
+                className={`flex items-center gap-2 text-xs font-bold px-6 py-3.5 rounded-full border transition-all cursor-pointer ${
                   isDark ? 'bg-slate-900/80 text-slate-200 border-cyan-900/50 hover:border-cyan-400' : 'bg-slate-100 text-slate-800 border-slate-300 hover:border-cyan-400'
                 }`}
               >
@@ -101,50 +101,50 @@ export const PatientDashboard: React.FC = () => {
           </div>
 
           {/* 4 Bottom Telemetry Metric Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-            <div className={`p-4 rounded-2xl border transition-all jiggle-hover ${
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4">
+            <div className={`p-4 rounded-2xl border transition-all ${
               isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
             }`}>
               <div className="text-cyan-400 mb-2">
                 <Users className="w-5 h-5" />
               </div>
-              <div className="text-2xl font-black">{totalCount}</div>
-              <div className="text-[11px] text-slate-400 font-medium">Monitored Patients</div>
+              <div className="text-xl sm:text-2xl font-black">{totalCount}</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Monitored Patients</div>
             </div>
 
-            <div className={`p-4 rounded-2xl border transition-all jiggle-hover ${
+            <div className={`p-4 rounded-2xl border transition-all ${
               isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
             }`}>
               <div className="text-teal-400 mb-2">
                 <FileCheck2 className="w-5 h-5" />
               </div>
-              <div className="text-2xl font-black">1,420</div>
-              <div className="text-[11px] text-slate-400 font-medium">Extracted Biomarkers</div>
+              <div className="text-xl sm:text-2xl font-black">1,420</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Extracted Biomarkers</div>
             </div>
 
-            <div className={`p-4 rounded-2xl border transition-all jiggle-hover ${
+            <div className={`p-4 rounded-2xl border transition-all ${
               isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
             }`}>
               <div className="text-rose-500 mb-2">
                 <ShieldAlert className="w-5 h-5" />
               </div>
-              <div className="text-2xl font-black">{criticalCount}</div>
-              <div className="text-[11px] text-slate-400 font-medium">Threat Interceptions</div>
+              <div className="text-xl sm:text-2xl font-black">{criticalCount}</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Threat Interceptions</div>
             </div>
 
-            <div className={`p-4 rounded-2xl border transition-all jiggle-hover ${
+            <div className={`p-4 rounded-2xl border transition-all ${
               isDark ? 'bg-[#091122]/90 border-cyan-900/40' : 'bg-slate-50 border-slate-200 shadow-sm'
             }`}>
               <div className="text-purple-400 mb-2">
                 <Activity className="w-5 h-5" />
               </div>
-              <div className="text-2xl font-black">14</div>
-              <div className="text-[11px] text-slate-400 font-medium">Indexed RAG Vector Docs</div>
+              <div className="text-xl sm:text-2xl font-black">14</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Indexed RAG Vector Docs</div>
             </div>
           </div>
         </div>
 
-        {/* FLOATING RIGHT NAVIGATION CARD matching Image 2 */}
+        {/* FLOATING RIGHT NAVIGATION CARD */}
         <aside className={`w-full lg:w-56 rounded-[28px] p-5 border shrink-0 transition-all shadow-xl space-y-4 ${
           isDark 
             ? 'bg-[#0c182c]/85 border-cyan-500/30 text-slate-100' 
@@ -162,7 +162,7 @@ export const PatientDashboard: React.FC = () => {
                 <button
                   key={link.id}
                   onClick={() => setActiveTab(link.id)}
-                  className={`w-full text-left px-3.5 py-2 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer jiggle-hover ${
+                  className={`w-full text-left px-3.5 py-2 rounded-2xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
                     isActive
                       ? 'bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black shadow-md'
                       : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
@@ -195,15 +195,15 @@ export const PatientDashboard: React.FC = () => {
             />
           </div>
 
-          <div className={`flex items-center gap-1 p-1.5 rounded-2xl border text-xs ${
+          <div className={`flex items-center gap-1 p-1.5 rounded-2xl border text-xs overflow-x-auto max-w-full ${
             isDark ? 'bg-[#050811] border-slate-800' : 'bg-slate-100 border-slate-200'
           }`}>
-            <span className="text-slate-400 px-2 font-bold text-[11px]">Filter:</span>
+            <span className="text-slate-400 px-2 font-bold text-[11px] whitespace-nowrap">Filter:</span>
             {['all', 'critical', 'high', 'moderate', 'low'].map(r => (
               <button
                 key={r}
                 onClick={() => setSelectedRiskFilter(r)}
-                className={`px-3 py-1.5 rounded-xl capitalize font-bold text-xs transition-all cursor-pointer jiggle-hover ${
+                className={`px-3 py-1.5 rounded-xl capitalize font-bold text-xs transition-all cursor-pointer whitespace-nowrap ${
                   selectedRiskFilter === r 
                     ? 'bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black shadow-md' 
                     : 'text-slate-400 hover:text-slate-200'
@@ -216,15 +216,15 @@ export const PatientDashboard: React.FC = () => {
         </div>
 
         {/* Patient Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {filteredPatients.map(patient => (
             <div
               key={patient.id}
               onClick={() => handleSelectPatient(patient.id)}
-              className={`rounded-3xl p-6 border cursor-pointer group space-y-4 transition-all jiggle-hover ${
+              className={`rounded-3xl p-5 sm:p-6 border cursor-pointer group space-y-4 transition-all hover:border-cyan-400/80 ${
                 isDark 
-                  ? 'bg-[#0c182c]/80 border-cyan-900/30 hover:border-cyan-400/80 text-slate-100 shadow-xl' 
-                  : 'bg-white border-slate-200 hover:border-cyan-400 text-slate-900 shadow-sm'
+                  ? 'bg-[#0c182c]/80 border-cyan-900/30 text-slate-100 shadow-xl' 
+                  : 'bg-white border-slate-200 text-slate-900 shadow-sm'
               }`}
             >
               <div className="flex items-start justify-between gap-2">
@@ -237,7 +237,7 @@ export const PatientDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <span className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${
+                <span className={`text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider shrink-0 ${
                   patient.riskLevel === 'critical' ? 'bg-rose-500/10 text-rose-500 border border-rose-500/30' :
                   patient.riskLevel === 'high' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/30' :
                   'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30'
@@ -263,13 +263,13 @@ export const PatientDashboard: React.FC = () => {
       {/* Floating Bottom Right AI Chat Assistant Button */}
       <button
         onClick={() => setActiveTab('rag')}
-        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer jiggle-hover border border-cyan-300"
+        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-black text-xs px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 cursor-pointer border border-cyan-300 hover:scale-105 transition-transform"
       >
         <Bot className="w-4 h-4" />
         <span>Clinical AI Copilot</span>
       </button>
 
-      {/* Ingestion Modal */}
+      {/* Ingestion Modal (Popup inside app context) */}
       <OCRUploadModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} />
     </div>
   );
